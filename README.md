@@ -5,7 +5,10 @@ Clone this project to you local machine. Once you have done that and you are loc
 
 * php assign_shipments.php destinations.txt drivers.txt
 
-Note:
+Notes:
 
-Inside this project you will find both destinations.txt and drivers.txt files.
+- Inside this project you will find both destinations.txt and drivers.txt files.
 You can edit them with your destination/drivers names list.
+
+- In feature/optimization branch there is an alternative solution, avoiding
+to perform all permutations (preventing brute force)
