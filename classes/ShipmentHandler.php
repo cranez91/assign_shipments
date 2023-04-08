@@ -26,7 +26,11 @@
             return preg_match_all('/[bcdfghjklmnpqrstvwxyz]/i', $driver, $matches);
         }
 
-        private function findCommonFactors(int $num1, int $num2) {
+        private function getStreetName(string $address): string {
+            return preg_replace('/^\d+\s+/', '', $address);
+        }
+
+        private function findCommonFactors(int $num1, int $num2): array {
             $factors = [];
             $min = min([$num1, $num2]);
             $max = max([$num1, $num2]);
@@ -58,9 +62,8 @@
         private function calculateSuitabilityScore(string $address, string $driver): float
         {
             //Removing number from the address, for instance '123 Main St' => 'Main St'
-            $stName = explode(" ", $address);
-            array_shift($stName);
-            $stName = strlen(implode('', $stName));
+            $stName = $this->getStreetName($address);
+            $stName = strlen(str_replace(' ', '', $stName));
             
             //Removing spaces in driver name
             $driverName = strlen(str_replace(' ', '', $driver));
@@ -70,10 +73,10 @@
             return $ss;
         }
 
-        private function printResults(array $assignments)
+        private function printResults()
         {
             echo "Total SS: {$this->totalSS}" . PHP_EOL;
-            foreach ($assignments as $shipment => $driver) {
+            foreach ($this->assignment as $shipment => $driver) {
                 echo "$shipment -> $driver" . PHP_EOL;
             }
         }
@@ -99,7 +102,7 @@
                 }
             }
 
-            $this->printResults($assignments);
+            $this->printResults();
         }
     }
 ?>
