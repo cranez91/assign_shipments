@@ -26,6 +26,10 @@
             return preg_match_all('/[bcdfghjklmnpqrstvwxyz]/i', $driver, $matches);
         }
 
+        private function getStreetName(string $address): string {
+            return preg_replace('/^\d+\s+/', '', $address);
+        }
+
         private function findCommonFactors(int $num1, int $num2) {
             $factors = [];
             $min = min([$num1, $num2]);
@@ -58,20 +62,15 @@
         private function calculateSuitabilityScore(string $address, string $driver): float
         {
             //Removing number from the address, for instance '123 Main St' => 'Main St'
-            $stName = $this->getStreetNameLenght($address);
+            $stName = $this->getStreetName($address);
+            $stName = strlen(str_replace(' ', '', $stName));
+
             //Removing spaces in driver name
             $driverName = strlen(str_replace(' ', '', $driver));
             
             $ss = $this->isEven($stName) ? $this->countVowels($driver) * self::INCREASE_50 : $this->countConsonants($driver);
             if ($this->findCommonFactors($stName, $driverName)) $ss *= self::INCREASE_50;
             return $ss;
-        }
-
-        private function getStreetNameLenght(string $destination)
-        {
-            $stName = explode(" ", $destination);
-            array_shift($stName);
-            return strlen(implode('', $stName));
         }
 
         private function setPermutations($topDestination, $topDriver)
@@ -121,7 +120,8 @@
             //Get all destinations with street name length as even
             //Get the drivers with most vowels and consonants in name
             for($i = 0 ; $i < sizeof($this->destinations); $i++) {
-                if ($this->isEven( $this->getStreetNameLenght($this->destinations[$i]) )){
+                $stName = $this->getStreetName($this->destinations[$i]);
+                if ($this->isEven( strlen( str_replace(' ', '', $stName) ) )){
                    $evenDestinations[$i] = $this->destinations[$i];
                 }
 
@@ -163,7 +163,9 @@
 
             foreach ($this->destinations as $index => $destination) {
                 //Removing number from the address, for instance '123 Main St' => 'Main St'
-                $stName = $this->getStreetNameLenght($destination);
+                $stName = $this->getStreetName($destination);
+                $stName = strlen(str_replace(' ', '', $stName));
+
                 //Removing spaces in driver name
                 $driverName = strlen(str_replace(' ', '', $topDriverName));
                 if ($this->findCommonFactors($stName, $driverName)) {
